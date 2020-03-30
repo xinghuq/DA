@@ -1,0 +1,17 @@
+Package: DA
+Version: 0.2.0
+Date: 2019-05-31
+Title: Discriminant Analysis
+Description: DA incorporates the commonly used linear and non-linear, local and global supervised learning appraoches (discriminant alaysis). These discriminant analysis can be used to do ecological and evolutionary inference. We show the examples of demographic history inference, species identification, and population structure inference in the vignettes using the supervised discriminant analysis.
+Author: Xinghu Qin
+Maintainer: Xinghu Qin <qinxinghu@gmail.com>
+Depends: R (>= 3.0)
+License: GPL (>= 3)
+SystemRequirements: GNU make
+URL: https://github.com/xinghuq/DA
+BugReports: https://github.com/xinghuq/DA/issues
+Imports: adegenet,lfda,MASS,kernlab,klaR,plotly,rARPACK
+VignetteBuilder: knitr
+NeedsCompilation: no
+RoxygenNote: 6.1.1
+Suggests: knitr,testthat,rmarkdown

@@ -1,0 +1,187 @@
+---
+title: "Ecological and Evolutionary Inference using Supervised Learning both Visually and Statistically "
+subtitle: "Population structure inference using supervised learning"
+author: "Xinghu Qin  --School of Biology, University of St Andrews"
+#date: "`r Sys.Date()`"
+date: "30-3-2020"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Instruction for Package DA }
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# Instruction
+
+This vignette demonstrates the implementation of supervised leanring in ecological and evolutionary inference. In this vignette, we take the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as an example. We aim to use different supervised leaning techniques to identify the population structure of 15 cattle breeds.
+
+
+# Practical analyses
+
+We use the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as an example to show population structure inference and visualization. We will compare six approaches that are feasible and suitable for population structure inference. Here we use the commonly used unsupervised learning technique PCA as the benchmark. We demonstrate the implementations of five supervised learning approaches, including DAPC, LFDAPC, LFDA, LFDAKPC, and KLFDA, in population structure identification. These supervised learning techniques are all from the same discriminant family.  
+
+First, we need to install and load the package.
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+##Install DA
+
+```{r, install}
+#Install from CRAN
+#install.packages("DA")
+## or you can get the latest version of HierDpart from github
+library(devtools)
+
+install_github("xinghuq/DA")
+
+library("DA")
+
+```
+```{r, library}
+# example genepop file
+f <- system.file('extdata',package='DA')
+infile <- file.path(f, "Cattle_breeds_allele_frequency.csv")
+Cattle_pop=file.path(f, "Cattle_pop.csv")
+cattle_geno=read.csv(infile,h=T)
+cattle_pop=read.csv(Cattle_pop,h=T)
+
+```
+## Principal component Analysis (PCA)
+PCA is still one of the most commonly used approaches to study population structure. However, PCs represent the global structure of the data without consideration of variation within classes.
+
+```{r}
+cattle_pop$x=factor(cattle_pop$x,levels = unique(cattle_pop$x))
+#plot the data projection on the components
+cattle_pc=princomp(cattle_geno[,-1])
+
+
+library(plotly)
+   cols=rainbow(length(unique(cattle_pop$x)))
+   p0 <- plot_ly(as.data.frame(cattle_pc$scores), x =cattle_pc$scores[,1], y =cattle_pc$scores[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
+     add_markers() %>%
+     layout(scene = list(xaxis = list(title = 'PC1'),
+                         yaxis = list(title = 'PC2')))
+print(p0)
+
+```
+## Discriminant analysis of principal components (DAPC)
+Using DAPC to display the pop structure is a common means in population genetics. This can be achieved through "adegenet" package.
+```{r}
+library(adegenet)
+cattle_pop$x=factor(cattle_pop$x,levels = unique(cattle_pop$x))
+#plot the data projection on the components
+cattle_dapc=dapc(cattle_geno[,-1],grp=cattle_pop$x,n.pca=10, n.da=3)
+
+
+library(plotly)
+   cols=rainbow(length(unique(cattle_pop$x)))
+   p1 <- plot_ly(as.data.frame(cattle_dapc$ind.coord), x =cattle_dapc$ind.coord[,1], y =cattle_dapc$ind.coord[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
+     add_markers() %>%
+     layout(scene = list(xaxis = list(title = 'LDA1'),
+                         yaxis = list(title = 'LDA2')))
+print(p1)
+
+```
+This is an interactive plot that allows you to point the data values and display the value as you wish.
+
+## Discriminant analysis of kernel principal components (DAKPC)
+
+Discriminant analysis of kernel principal components (DAKPC) is a variant of DAPC. However, people try to incorporate the non-linear relationship between loci and samples, so that the kernel principal component analysis is emolyed to achieve this goal.
+Below is the implementation of DAKPC.
+
+```{r}
+cattle_ldakpc=LDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3)
+
+ cols=rainbow(length(unique(cattle_pop$x)))
+   p2 <- plot_ly(as.data.frame(cattle_ldakpc$LDs), x =cattle_ldakpc$LDs[,1], y =cattle_ldakpc$LDs[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
+     add_markers() %>%
+     layout(scene = list(xaxis = list(title = 'LDA1'),
+                         yaxis = list(title = 'LDA2')))
+print(p2)
+```
+DAKPC has the similar result with DAPC.
+
+##  Local (fisher) Discriminant Analysis  (LFDA)
+In comparison to LDA, LFDA not only considers the variation between classes, but also the variation within classes. Thus, LFDA can dscriminate the multimodal data while LDA can not. LFDA is an upgraded version of LDA.
+
+```{r}
+cattle_lfda=LFDA(cattle_geno[,-1],cattle_pop$x,r=3,tol=1E-3)
+
+cols=rainbow(length(unique(cattle_pop$x)))
+p3 <- plot_ly(as.data.frame(cattle_lfda$Z), x =cattle_lfda$Z[,1], y =cattle_lfda$Z[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
+     add_markers() %>%
+     layout(scene = list(xaxis = list(title = 'LDA1'),
+                         yaxis = list(title = 'LDA2')))
+print(p3)
+```
+
+##  Local (fisher) discriminant analysis of kernel principle components (LFDAKPC)
+
+As LFDA is a more advanced version of LDA, I adopt the LFDA for discrimination on the bases of LDAKPC. Now we get LFDAKPC, Local (fisher) discriminant analysis of kernel principle components (LFDAKPC). Below is the implementation of LFDAKPC.
+
+```{r}
+cattle_lfdakpc=LFDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3,tol=1E-3)
+
+cols=rainbow(length(unique(cattle_pop$x)))
+p4 <- plot_ly(as.data.frame(cattle_lfdakpc$LDs), x =cattle_lfdakpc$LDs[,1], y =cattle_lfdakpc$LDs[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
+     add_markers() %>%
+     layout(scene = list(xaxis = list(title = 'LDA1'),
+                         yaxis = list(title = 'LDA2')))
+print(p4)
+```
+
+The LFDAKPC also produces the similar results as LDAKPC and DAPC.
+
+
+
+
+##  Kernel local (Fisher) discriminant analysis (KLFDA)
+
+Kernel local (Fisher) discriminant analysis (KLFDA) is a kernelized version of local Fisher discriminant analysis (LFDA). KLFAD can capature the non-linear relationships between samples. It also shows an improved power for discrimination than LDA.
+
+
+```{r}
+cattle_klfda=klfda_1(as.matrix(cattle_geno[,-1]),as.matrix(cattle_pop$x),r=3,tol=1E-10,prior = NULL)
+
+cols=rainbow(length(unique(cattle_pop$x)))
+p5 <- plot_ly(as.data.frame(cattle_klfda$Z), x =cattle_klfda$Z[,1], y =cattle_klfda$Z[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
+     add_markers() %>%
+     layout(scene = list(xaxis = list(title = 'LDA1'),
+                         yaxis = list(title = 'LDA2')))
+print(p5)
+```
+
+KLFDA seems present the aggregates that are more convergent than the above methods.
+
+
+
+
+
+# References
+Laloë, D., Jombart, T., Dufour, A.-B. & Moazami-Goudarzi, K. (2007). Consensus genetic structuring and typological value of markers using multiple co-inertia analysis. Genetics Selection Evolution, 39, 545.
+
+Jombart, T. (2008). adegenet: a R package for the multivariate analysis of genetic markers. Bioinformatics, 24, 1403-1405.
+Sugiyama, M (2007).Dimensionality reduction of multimodal labeled data by local Fisher discriminant analysis. Journal of Machine Learning Research, vol.8, 1027-1061.
+
+Sugiyama, M (2006). Local Fisher discriminant analysis for supervised dimensionality reduction. In W. W. Cohen and A. Moore (Eds.), Proceedings of 23rd International Conference on Machine Learning (ICML2006), 905-912.
+
+Original Matlab Implementation: http://www.ms.k.u-tokyo.ac.jp/software.html#LFDA
+
+Tang, Y., & Li, W. (2019). lfda: Local Fisher Discriminant Analysis inR. Journal of Open Source Software, 4(39), 1572.
+
+Moore, A. W. (2004). Naive Bayes Classifiers. In School of Computer Science. Carnegie Mellon University.
+
+Pierre Enel (2020). Kernel Fisher Discriminant Analysis (https://www.github.com/p-enel/MatlabKFDA), GitHub. Retrieved March 30, 2020.
+
+Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 package for kernel methods in R. Journal of statistical software, 11(9), 1-20.
+
+Bingpei Wu, 2012, WMDB 1.0: Discriminant Analysis Methods by Weight Mahalanobis Distance and bayes.
+
+Ito, Y., Srinivasan, C., & Izumi, H. (2006, September). Discriminant analysis by a neural network with Mahalanobis distance. In International Conference on Artificial Neural Networks (pp. 350-360). Springer, Berlin, Heidelberg.
+
+Wölfel, M., & Ekenel, H. K. (2005, September). Feature weighted Mahalanobis distance: improved robustness for Gaussian classifiers. In 2005 13th European signal processing conference (pp. 1-4). IEEE.
+
