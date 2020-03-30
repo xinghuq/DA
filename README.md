@@ -27,6 +27,7 @@ y <- iris[,5] # this should be a vector that represents different classes
 ```
 
 ###  Discriminant analysis of principal components (DAPC)
+
 ```{R}
 library(adegenet)
 iris_dapc=dapc(iris[,-5],grp=iris[,5],n.pca=3, n.da=3)
@@ -40,9 +41,10 @@ library(plotly)
                          yaxis = list(title = 'LDA2')))
 print(p1)
 ```
-###Discriminant analysis of kernel principal components (DAKPC)
 
-```{r}
+### Discriminant analysis of kernel principal components (DAKPC)
+
+```{R}
 iris_ldakpc=LDAKPC(iris[,-5],grp=iris[,5],n.pc=3)
 
  p2 <- plot_ly(as.data.frame(iris_ldakpc$LDs), x =iris_ldakpc$LDs[,1], y =iris_ldakpc$LDs[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 
