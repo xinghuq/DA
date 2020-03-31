@@ -1,6 +1,6 @@
 
 
-#### now here x can be matrix, data.frame, or kernel matrix, here we can use the kernel version of discriminant， these function also correct the existing function at R CRAN
+#### now here x can be matrix, data.frame, or kernel matrix, here we can use the kernel version of discriminant, these function also correct the existing function at R CRAN
 
 LDAKPC <- function(x,y, n.pc,usekernel = FALSE, fL = 0,kernel.name = "rbfdot", kpar=list(0.001), kernel="gaussian",threshold = 1e-5,...){
   

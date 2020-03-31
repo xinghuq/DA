@@ -98,7 +98,7 @@ Mabayes<- function (TrnX, TrnG, p = rep(1, length(levels(TrnG))),TstX = NULL, va
   print(G[which(blong!=G)])
   print("percent of right judgement")
   print(1-length(which(blong!=G))/length(blong))    
-  return(list(r=r,posterior2=posterior2,cl2=cl2,blong=blong,posterior=posterior,post_class=cl,wrong_j=wrong_j,sample_assign_F=sample_assign_F,sample_act_T=sample_act_T,success=success))
+  return(list(posterior2=posterior2,cl2=cl2,blong=blong,posterior=posterior,post_class=cl,wrong_j=wrong_j,sample_assign_F=sample_assign_F,sample_act_T=sample_act_T,success=success))
   }
  else
    return(list(blong=blong,D=D,posterior2=posterior2,cl2=cl2,posterior=posterior,post_class=cl))

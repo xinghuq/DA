@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/592149/d8adc8191e6448f2a49f77400b4f7bcd
+bundleId: https://api.rpubs.com/api/v1/document/592149/d8adc8191e6448f2a49f77400b4f7bcd
+url: http://rpubs.com/xinghuq/592149
+when: 1585593961.212

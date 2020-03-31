@@ -1,7 +1,7 @@
 
 ### This function provides the unified solution for mutiple Kernel choice. the kernel choice here will allow users to choose any types of kernel they want, not only constrains on gaussian kernel
 
-klfda_1=function (x, y,kernel=polydot(degree = 1, scale = 1, offset = 1), r=20, tol,prior, CV=FALSE,usekernel = TRUE, fL = 0.5,metric = c('weighted', 'orthonormalized', 'plain'),
+klfda_1=function (x, y,kernel=kernlab::polydot(degree = 1, scale = 1, offset = 1), r=20, tol,prior, CV=FALSE,usekernel = TRUE, fL = 0.5,metric = c('weighted', 'orthonormalized', 'plain'),
                   knn = 6, reg = 0.001,...) {## reg regularization parameter (default: 0.001)
   
   #
