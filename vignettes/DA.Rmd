@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 ## or you can get the latest version of HierDpart from github
 library(devtools)
 
-#install_github("xinghuq/DA")
+install_github("xinghuq/DA")
 
 library("DA")
 
