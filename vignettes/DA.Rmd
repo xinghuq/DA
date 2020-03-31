@@ -1,9 +1,9 @@
 ---
 title: "Ecological and Evolutionary Inference using Supervised Learning both Visually and Statistically "
-subtitle: "Population structure inference using supervised learning"
+subtitle: "Part 1. Population structure inference using supervised learning"
 author: "Xinghu Qin  --School of Biology, University of St Andrews"
 #date: "`r Sys.Date()`"
-date: "30-3-2020"
+date: "30-03-2020"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Instruction for Package DA }
@@ -12,12 +12,12 @@ vignette: >
 ---
 # Instruction
 
-This vignette demonstrates the implementation of supervised leanring in ecological and evolutionary inference. In this vignette, we take the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as an example. We aim to use different supervised leaning techniques to identify the population structure of 15 cattle breeds.
+This vignette demonstrates the implementation of supervised learning in ecological and evolutionary inference. In this vignette, we take the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as an example. We aim to use different supervised leaning techniques to identify the population structure of 15 cattle breeds.
 
 
 # Practical analyses
 
-We use the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as an example to show population structure inference and visualization. We will compare six approaches that are feasible and suitable for population structure inference. Here we use the commonly used unsupervised learning technique PCA as the benchmark. We demonstrate the implementations of five supervised learning approaches, including DAPC, LFDAPC, LFDA, LFDAKPC, and KLFDA, in population structure identification. These supervised learning techniques are all from the same discriminant family.  
+We use the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as an example to show population structure inference and visualization. We compare six approaches that are feasible and suitable for population structure inference here. We use the commonly used unsupervised learning technique, PCA, as the benchmark. We demonstrate how to use these five supervised learning approaches, including DAPC, LFDAPC, LFDA, LFDAKPC, and KLFDA, to identify population structure. These five supervised learning techniques are all from the same discriminant family.  
 
 First, we need to install and load the package.
 
@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 ## or you can get the latest version of HierDpart from github
 library(devtools)
 
-install_github("xinghuq/DA")
+#install_github("xinghuq/DA")
 
 library("DA")
 
@@ -50,50 +50,57 @@ cattle_geno=read.csv(infile,h=T)
 cattle_pop=read.csv(Cattle_pop,h=T)
 
 ```
-## Principal component Analysis (PCA)
+## Principal Component Analysis (PCA)
 PCA is still one of the most commonly used approaches to study population structure. However, PCs represent the global structure of the data without consideration of variation within classes.
 
-```{r}
+```{r fig1, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
 cattle_pop$x=factor(cattle_pop$x,levels = unique(cattle_pop$x))
-#plot the data projection on the components
+### PCA
 cattle_pc=princomp(cattle_geno[,-1])
 
-
+#plot the data projection on the components
 library(plotly)
    cols=rainbow(length(unique(cattle_pop$x)))
    p0 <- plot_ly(as.data.frame(cattle_pc$scores), x =cattle_pc$scores[,1], y =cattle_pc$scores[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'PC1'),
                          yaxis = list(title = 'PC2')))
-print(p0)
+
+  
+p0
 
 ```
-## Discriminant analysis of principal components (DAPC)
+Fig.1 PCA plot of 15 cattle breeds.
+
+## Discriminant Analysis of Principal Components (DAPC)
 Using DAPC to display the pop structure is a common means in population genetics. This can be achieved through "adegenet" package.
-```{r}
+```{r fig2, fig.height = 5, fig.width = 8.5, fig.align = "center"}
 library(adegenet)
 cattle_pop$x=factor(cattle_pop$x,levels = unique(cattle_pop$x))
-#plot the data projection on the components
+###DAPC
 cattle_dapc=dapc(cattle_geno[,-1],grp=cattle_pop$x,n.pca=10, n.da=3)
 
-
+#plot the data projection on the components
 library(plotly)
    cols=rainbow(length(unique(cattle_pop$x)))
    p1 <- plot_ly(as.data.frame(cattle_dapc$ind.coord), x =cattle_dapc$ind.coord[,1], y =cattle_dapc$ind.coord[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
-print(p1)
+
+   p1
 
 ```
+
+Fig.2 DAPC plot of 15 cattle breeds.
 This is an interactive plot that allows you to point the data values and display the value as you wish.
 
-## Discriminant analysis of kernel principal components (DAKPC)
+## Discriminant Analysis of Kernel Principal Components (DAKPC)
 
 Discriminant analysis of kernel principal components (DAKPC) is a variant of DAPC. However, people try to incorporate the non-linear relationship between loci and samples, so that the kernel principal component analysis is emolyed to achieve this goal.
 Below is the implementation of DAKPC.
 
-```{r}
+```{r fig3, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
 cattle_ldakpc=LDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3)
 
  cols=rainbow(length(unique(cattle_pop$x)))
@@ -101,14 +108,16 @@ cattle_ldakpc=LDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3)
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
-print(p2)
+p2
 ```
-DAKPC has the similar result with DAPC.
+Fig.3 LDAKPC plot of 15 cattle breeds.
 
-##  Local (fisher) Discriminant Analysis  (LFDA)
-In comparison to LDA, LFDA not only considers the variation between classes, but also the variation within classes. Thus, LFDA can dscriminate the multimodal data while LDA can not. LFDA is an upgraded version of LDA.
+LDAKPC has the similar result with DAPC.
 
-```{r}
+##  Local Fisher Discriminant Analysis  (LFDA)
+In comparison to LDA, LFDA not only considers the variation between classes, but also the variation within classes. Thus, LFDA can discriminate the multimodal data while LDA can not. LFDA is an upgraded version of LDA.
+
+```{r fig4, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
 cattle_lfda=LFDA(cattle_geno[,-1],cattle_pop$x,r=3,tol=1E-3)
 
 cols=rainbow(length(unique(cattle_pop$x)))
@@ -116,14 +125,16 @@ p3 <- plot_ly(as.data.frame(cattle_lfda$Z), x =cattle_lfda$Z[,1], y =cattle_lfda
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
-print(p3)
+p3
 ```
+Fig.4 LFDA plot of 15 cattle breeds.
 
-##  Local (fisher) discriminant analysis of kernel principle components (LFDAKPC)
 
-As LFDA is a more advanced version of LDA, I adopt the LFDA for discrimination on the bases of LDAKPC. Now we get LFDAKPC, Local (fisher) discriminant analysis of kernel principle components (LFDAKPC). Below is the implementation of LFDAKPC.
+## Local Fisher Discriminant Analysis of Kernel Principal Components (LFDAKPC)
 
-```{r}
+As LFDA is more advanced than LDA, I adopt LFDA for discriminant analysis on the basis of LDAKPC. Now we get LFDAKPC, Local (Fisher) Discriminant Analysis of Kernel Principal Components (LFDAKPC). Below is the implementation of LFDAKPC.
+
+```{r fig5, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
 cattle_lfdakpc=LFDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3,tol=1E-3)
 
 cols=rainbow(length(unique(cattle_pop$x)))
@@ -131,20 +142,23 @@ p4 <- plot_ly(as.data.frame(cattle_lfdakpc$LDs), x =cattle_lfdakpc$LDs[,1], y =c
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
-print(p4)
+p4
 ```
+
+
+Fig.5 LFDAKPC plot of 15 cattle breeds.
 
 The LFDAKPC also produces the similar results as LDAKPC and DAPC.
 
 
 
 
-##  Kernel local (Fisher) discriminant analysis (KLFDA)
+##  Kernel Local Fisher Discriminant Analysis (KLFDA)
 
-Kernel local (Fisher) discriminant analysis (KLFDA) is a kernelized version of local Fisher discriminant analysis (LFDA). KLFAD can capature the non-linear relationships between samples. It also shows an improved power for discrimination than LDA.
+Kernel local (Fisher) discriminant analysis (KLFDA) is a kernelized version of local Fisher discriminant analysis (LFDA). KLFAD can capature the non-linear relationships between samples. It was reported that the discrimintory power of KLFDA was significantly improved compared to LDA.
 
 
-```{r}
+```{r fig6, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
 cattle_klfda=klfda_1(as.matrix(cattle_geno[,-1]),as.matrix(cattle_pop$x),r=3,tol=1E-10,prior = NULL)
 
 cols=rainbow(length(unique(cattle_pop$x)))
@@ -152,13 +166,29 @@ p5 <- plot_ly(as.data.frame(cattle_klfda$Z), x =cattle_klfda$Z[,1], y =cattle_kl
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
-print(p5)
+p5
 ```
-
+Fig.6 KLFDA plot of 15 cattle breeds.
 KLFDA seems present the aggregates that are more convergent than the above methods.
 
+All the above methods show the same global structure for 15 cattle breeds. 
+
+##  Individual assignment using Kernel Local Fisher Discriminant Analysis (KLFDA)
+
+Kernel local (Fisher) discriminant analysis (KLFDA) is the optimal approach for population structurte inference when tested using this cattle data. Now, we plot the cattle individual membership representing the posterior possibilities of individuals as the population structure. 
+This gives the similar plot produced from STRUCTURE software.
 
 
+```{r fig7, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
+
+
+library(adegenet)
+## asignment plot
+compoplot(as.matrix(cattle_klfda$bayes_assigment$posterior),show.lab = TRUE, posi=list(x=5,y=-0.01),txt.leg = unique(cattle_pop$x))
+
+```
+
+Fig. 7 The population structure of Cattle breeds (individual assignment)
 
 
 # References
