@@ -5,7 +5,7 @@ For a more detailed tutorial on population structure inference please visit:http
 
 #  DAPC, DAKPC, LFDA, LFDAKPC, KLFDA
 
-This package implements five supervised learning approaches that are suitable for ecological and evolutionary inference both visually and statistically. Five approaches in our vignette: Linear discriminant analysis of principle components (DAPC), linear discriminant analysis of kernel principle components (DAKPC), local (fisher) linear discriminant analysis (LFDA), local (fisher) discriminant analysis of kernel principle components (LFDAKPC) and kernel local (fisher) linear discriminant analysis (KLFDA). 
+This package implements five supervised learning approaches that are suitable for ecological and evolutionary inference both visually and statistically. Five approaches in our vignette: Linear discriminant analysis of principal components (DAPC), linear discriminant analysis of kernel principal components (DAKPC), local (Fisher) linear discriminant analysis (LFDA), local (Fisher) discriminant analysis of kernel principal components (LFDAKPC) and kernel local (Fisher) linear discriminant analysis (KLFDA). 
 
 Welcome any [feedback](https://github.com/xinghuq/DA/issues) and [pull request](https://github.com/xinghuq/DA/pulls).  
 
@@ -68,7 +68,7 @@ iris_lfda=LFDA(iris[,-5],grp=iris[,5],r=3,tol=1)
 p3
 
 ```
-##  Local (fisher) discriminant analysis of kernel principle components (LFDAKPC)
+##  Local (fisher) discriminant analysis of kernel principal components (LFDAKPC)
 ```{r fig4, fig.height = 5, fig.width = 10, fig.align = "center"}
 iris_lfdakpc=LFDAKPC(iris[,-5],grp=iris[,5],n.pc=3,tol=1)
 
