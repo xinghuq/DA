@@ -99,5 +99,5 @@ Note we did not show the discrimination results,users can look into the discrimi
 
 ## Citation
 
-Xinghu Qin.2020. DA: Ecological and evolutionary inference using machine learning approaches both visually and statistically. 
+Xinghu Qin et al. 2020. DA: Ecological and evolutionary inference using machine learning approaches both visually and statistically. 
 
