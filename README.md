@@ -72,7 +72,7 @@ p3
 ```{r fig4, fig.height = 5, fig.width = 10, fig.align = "center"}
 iris_lfdakpc=LFDAKPC(iris[,-5],y=iris[,5],n.pc=3,tol=1)
 
- p4 <- plot_ly(as.data.frame(iris_lfdakpc$Z), x =iris_lfdakpc$Z[,1], y =iris_lfdakpc$Z[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 
+ p4 <- plot_ly(as.data.frame(iris_lfdakpc$$LFDAKPC$Z), x =iris_lfdakpc$$LFDAKPC$Z[,1], y =iris_lfdakpc$$LFDAKPC$Z[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
