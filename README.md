@@ -46,7 +46,7 @@ p1
 ### Discriminant analysis of kernel principal components (DAKPC)
 
 ```{r fig2, fig.height = 5, fig.width = 10, fig.align = "center"}
-iris_ldakpc=LDAKPC(iris[,-5],grp=iris[,5],n.pc=3)
+iris_ldakpc=LDAKPC(iris[,-5],y=iris[,5],n.pc=3)
 
  p2 <- plot_ly(as.data.frame(iris_ldakpc$LDs), x =iris_ldakpc$LDs[,1], y =iris_ldakpc$LDs[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 
      add_markers() %>%
@@ -59,7 +59,7 @@ p2
 ### Local Fisher Discriminant Analysis(LFDA)
 
 ```{r fig3, fig.height = 5, fig.width = 10, fig.align = "center"}
-iris_lfda=LFDA(iris[,-5],grp=iris[,5],r=3,tol=1)
+iris_lfda=LFDA(iris[,-5],y=iris[,5],r=3,tol=1)
 
  p3 <- plot_ly(as.data.frame(iris_lfda$Z), x =iris_lfda$Z[,1], y =iris_lfda$Z[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 
      add_markers() %>%
@@ -70,7 +70,7 @@ p3
 ```
 ##  Local (fisher) discriminant analysis of kernel principal components (LFDAKPC)
 ```{r fig4, fig.height = 5, fig.width = 10, fig.align = "center"}
-iris_lfdakpc=LFDAKPC(iris[,-5],grp=iris[,5],n.pc=3,tol=1)
+iris_lfdakpc=LFDAKPC(iris[,-5],y=iris[,5],n.pc=3,tol=1)
 
  p4 <- plot_ly(as.data.frame(iris_lfdakpc$Z), x =iris_lfdakpc$Z[,1], y =iris_lfdakpc$Z[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 
      add_markers() %>%
