@@ -99,5 +99,5 @@ Note we did not show the discrimination results,users can look into the discrimi
 
 ## Citation
 
-Xinghu Qin, Mary Wu, T. Ryan Lock, Robert L. Kallenbach. 2020. DA: Ecological and evolutionary inference using machine learning approaches both visually and statistically.R package version, 0.5.
+Xinghu Qin, Mary Wu, T. Ryan Lock, Robert L. Kallenbach. 2020. DA: Ecological and evolutionary inference using machine learning approaches both visually and statistically.R package version 0.2.0.
 
