@@ -1,12 +1,18 @@
 ## DA: Ecological and evolutionary inference using discriminant analysis
 
-[Image](src="DA/A_example.png")
+[Image](src="DA/DA_example.png")
 
 ### Population structure inference using _DA_
 ---
-author: "Xinghu Qin  --School of Biology, University of St Andrews"
 
-date: "30-03-2020"
+author: "Xinghu Qin  --School of Biology, University of St Andrews"
+date : "30-03-2020"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Instruction for Package DA }
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
 ---
 A tutorial on population structure inference can also be found [here:](https://rpubs.com/xinghuq/592149).
 
