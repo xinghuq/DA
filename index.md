@@ -11,11 +11,7 @@ date : "30-03-2020"
 
 output: rmarkdown::html_vignette
 
-vignette: >
 
-  %\VignetteIndexEntry{Instruction for Package DA}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 
 ---
 A tutorial on population structure inference can also be found [here](https://rpubs.com/xinghuq/592149).
