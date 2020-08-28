@@ -1,13 +1,13 @@
 ## DA: Ecological and evolutionary inference using discriminant analysis
 
-![Image](src="DA_example.png")
+[Image](src="DA/A_example.png")
 
 ### Population structure inference using _DA_
-```
+---
 author: "Xinghu Qin  --School of Biology, University of St Andrews"
 
 date: "30-03-2020"
-```
+---
 A tutorial on population structure inference can also be found [here:](https://rpubs.com/xinghuq/592149).
 
 
