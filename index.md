@@ -1,6 +1,6 @@
 ## DA: Ecological and evolutionary inference using discriminant analysis
 
-![Image](src="DA_example.png" alt="DA_log" width="500" height="600">)
+![Image](src="DA_example.png")
 
 ### Population structure inference using _DA_
 ---
