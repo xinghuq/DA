@@ -15,11 +15,6 @@ We use the microsatellite genotypes of 15 cattle breeds (Laloë et al. 2007) as 
 
 First, we need to install and load the package.
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>")
-```
 
 ##Install DA
 
