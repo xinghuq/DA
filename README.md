@@ -5,17 +5,7 @@
 [Image](src="DA_example.png")
 
 ### Population structure inference using _DA_
----
 
-author: "Xinghu Qin  --School of Biology, University of St Andrews"
-
-date : "30-03-2020"
-
-output: rmarkdown::html_vignette
-
-
-
----
 A tutorial on population structure inference can also be found [here](https://rpubs.com/xinghuq/592149).
 
 
@@ -28,8 +18,7 @@ First, we need to install and load the package.
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
-)
+  comment = "#>")
 ```
 
 ##Install DA
@@ -41,7 +30,9 @@ knitr::opts_chunk$set(
 library(devtools)
 #install_github("xinghuq/DA")
 library("DA")
+
 ```
+
 ```{r, library}
 # example genepop file
 f <- system.file('extdata',package='DA')
@@ -49,6 +40,7 @@ infile <- file.path(f, "Cattle_breeds_allele_frequency.csv")
 Cattle_pop=file.path(f, "Cattle_pop.csv")
 cattle_geno=read.csv(infile,h=T)
 cattle_pop=read.csv(Cattle_pop,h=T)
+
 ```
 ## Principal Component Analysis (PCA)
 PCA is still one of the most commonly used approaches to study population structure. However, PCs represent the global structure of the data without consideration of variation within classes.
@@ -71,6 +63,7 @@ Fig.1 PCA plot of 15 cattle breeds.
 
 ## Discriminant Analysis of Principal Components (DAPC)
 Using DAPC to display the pop structure is a common means in population genetics. This can be achieved through "adegenet" package.
+
 ```{r fig2, fig.height = 5, fig.width = 8.5, fig.align = "center"}
 library(adegenet)
 cattle_pop$x=factor(cattle_pop$x,levels = unique(cattle_pop$x))
@@ -84,6 +77,7 @@ library(plotly)
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2')))
    p1
+   
 ```
 
 Fig.2 DAPC plot of 15 cattle breeds.
@@ -173,6 +167,7 @@ This gives the similar plot produced from STRUCTURE software.
 library(adegenet)
 ## asignment plot
 compoplot(as.matrix(cattle_klfda$bayes_assigment$posterior),show.lab = TRUE, posi=list(x=5,y=-0.01),txt.leg = unique(cattle_pop$x))
+
 ```
 
 Fig. 7 The population structure of Cattle breeds (individual assignment)
