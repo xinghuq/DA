@@ -2,7 +2,7 @@
  DA incorporates the commonly used linear and non-linear, local and global supervised learning approaches (discriminant analysis). These discriminant analyses can be used to do ecological and evolutionary inference. We show the examples of demographic history inference, species identification, and population structure inference in the vignettes using the supervised discriminant analysis.
 ## DA: Ecological and evolutionary inference using discriminant analysis
 
-[Image](src="DA_example.png")
+[Image](src="https://github.com/xinghuq/DA/blob/gh-pages/DA_example.png")
 
 ### Population structure inference using _DA_
 
