@@ -1,7 +1,7 @@
 
 # DA: Discriminant analysis
 
-For a more detailed tutorial on population structure inference please visit: https://rpubs.com/xinghuq/592149
+For a more detailed tutorial on population structure and community structure inference please visit: https://xinghuq.github.io/DA/
 
 #  DAPC, DAKPC, LFDA, LFDAKPC, KLFDA
 
