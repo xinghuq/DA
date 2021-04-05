@@ -1,0 +1,9 @@
+#10 simulations
+### -g  --genotypic：   Generates Arlequin projects outputs (*.arp ) in genotypic (diploid) format. Without this option, arp file are in the haploid format.
+
+
+./fsc26 -i 16PopIsland.par -n 10 -g
+
+## in windows cmd remove ./
+
+fsc26 -i 16PopIsland.par -n 10 -g
