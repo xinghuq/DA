@@ -1,0 +1,17 @@
+citHeader("To cite DA in publications use:")
+
+website <- "http://github.com/xinghuq/DA"
+year    <- sub("-.*","",meta$Date)
+version <- sprintf("R package version %s",meta$Version)
+
+citEntry(entry = "Manual",
+  title  = "{DA}: Qin, X.2021. Discriminant Analysis for Population structure inference",
+  author = personList(as.person("Xinghu Qin")),
+  year   = year,
+  note   = version,
+  url    = website,
+
+  textVersion =
+    paste("Qin Xinghu. ",
+          " 2021. Discriminant Analysis for Population structure inference ", "  ",version,". ",website,sep="")
+)
