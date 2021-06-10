@@ -6,7 +6,7 @@ Description: This package incorporates the commonly used linear and non-linear, 
 Author: Xinghu Qin
 Maintainer: Xinghu Qin <qinxinghu@gmail.com>
 biocViews:Software
-Depends: R (>= 3.0)
+Depends: R (>= 3.5)
 License: GPL (>= 3)
 SystemRequirements: GNU make
 URL: https://github.com/xinghuq/DA
