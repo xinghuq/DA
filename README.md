@@ -99,5 +99,5 @@ Note we did not show the discrimination results,users can look into the discrimi
 
 ## Citation
 
-Qin. X, Wu. M, Lock, T. R, Kallenbach, R. 2020. DA: Ecological and evolutionary inference using machine learning approaches both visually and statistically. R package version 1.1.1.
+Qin. X, Wu. M, Lock, T. R, Kallenbach, R. 2020. DA: Ecological and evolutionary inference using machine learning approaches both visually and statistically. R package version 1.2.1.
 
