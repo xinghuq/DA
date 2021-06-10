@@ -81,7 +81,7 @@ KLFDA=function(X, Y, r,order, regParam, usekernel=TRUE,fL=0.5,priors,tol,reg,met
                                                               # an entry is one if the pattern belong to this class)
   classVecsTrain = matrix(nrow=obj.nObservations, ncol=obj.nClasses);
   obj.nObsPerClas = matrix(nrow=1, ncol=obj.nClasses);
-  for (i in 1:obj.nClasses) {
+  for (i in seq_along(obj.nClasses)) {
   clas = obj.classes[i]
   classVecsTrain[, i] = match(obj.trainClass, clas,nomatch = 0)
   

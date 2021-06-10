@@ -16,10 +16,7 @@ Mabayes<- function (TrnX, TrnG, p = rep(1, length(levels(TrnG))),TstX = NULL, va
     setNames(rowSums(x %*% cov * x), rownames(x))
   }
   
-  
-  
-  
-   mx <- nrow(TrnX)
+  mx <- nrow(TrnX)
   mg <- nrow(TrnG)
   TrnG <- as.factor(TrnG)
   G=as.factor(as.numeric(TrnG))
@@ -45,7 +42,7 @@ Mabayes<- function (TrnX, TrnG, p = rep(1, length(levels(TrnG))),TstX = NULL, va
   }
   D <- matrix(0, nrow=g, ncol=nx)
   p = counts/mx
-  if (var.equal == TRUE || var.equal == T){
+  if (var.equal == TRUE || var.equal == TRUE){
     for (i in 1:g){
       d2 <- mahalanobis(TstX, mu[i,], var(TrnX),tol)
       D[i,] <- d2 - 2*log(p[i])
