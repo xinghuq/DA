@@ -1,4 +1,4 @@
-Update version number to 1.1.1 according to Bioconductor instruction (2021-06-10)
+Update version number to 1.2.0 according to Bioconductor instruction (2021-06-10)
 + Submitted to Bioconductor
 
 Changes in version 0.2.0 (2021-01-10)
