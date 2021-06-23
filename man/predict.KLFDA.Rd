@@ -1,18 +1,18 @@
-\name{predict.KLFDA}
-\alias{predict.KLFDA}
+\name{predict.KLFDA_mk}
+\alias{predict.KLFDA_mk}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Prediction function for Kernel Local Fisher Discriminant Analysis (KLFDA)
+\title{Prediction function for Kernel Local Fisher Discriminant Analysis (KLFDA) with a Multinomial kernel
 %%  ~~function to do ... ~~
 }
 \description{Prediction function for Kernel Local Fisher Discriminant Analysis (KLFDA) with a Multinomial kernel. Predictions are based on three classifiers. See KLFDA for detail. Results give the class labels and posterior possibility of the tested data.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-predict.KLFDA(obj, newdata)
+predict.KLFDA_mk(obj, newdata)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{obj}{The object from KLFDA model
+  \item{obj}{The object from KLFDA_mk model
 %%     ~~Describe \code{obj} here~~
 }
   \item{newdata}{ The tested data
@@ -54,15 +54,15 @@ Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 pack
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{KLFDA, predict.klfda_1
+\seealso{KLFDA_mk, predict.klfda_1
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-btest=KLFDA(X=as.matrix(iris[,1:4]),Y=as.matrix(as.data.frame(iris[,5])),r=3,order=2,regParam=0.25, usekernel=TRUE,fL=0.5,priors=NULL,tol=1e-90,reg=0.01,metric =  'plain',plotFigures=FALSE,
-           verbose=TRUE)
-pred=predict.KLFDA(btest,as.matrix(iris[1:10,1:4]))
+#btest=KLFDA_mk(X=as.matrix(iris[,1:4]),Y=as.matrix(as.data.frame(iris[,5])),r=3,order=2,regParam=0.25, usekernel=TRUE,fL=0.5,priors=NULL,tol=1e-90,reg=0.01,metric =  'plain',plotFigures=FALSE,
+#           verbose=TRUE)
+#pred=predict.KLFDA_mk(btest,as.matrix(iris[1:10,1:4]))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{predict.KLFDA}% use one of  RShowDoc("KEYWORDS")
+\keyword{predict.KLFDA_mk}% use one of  RShowDoc("KEYWORDS")
 
