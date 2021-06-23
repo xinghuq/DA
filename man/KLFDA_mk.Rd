@@ -1,14 +1,14 @@
-\name{KLFDA}
-\alias{KLFDA}
+\name{KLFDA_mk}
+\alias{KLFDA_mk}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Kernel Local Fisher Discriminant Analysis (KLFDA)
+\title{ Kernel Local Fisher Discriminant Analysis (KLFDA) with Multinomial kernel
 %%  ~~function to do ... ~~
 }
 \description{Kernel Local Fisher Discriminant Analysis (KLFDA). This function implements the Kernel Local Fisher Discriminant Analysis with a Multinomial kernel. 
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-KLFDA(X, Y, r, order, regParam, usekernel = TRUE, fL = 0.5, priors, tol, reg, metric, plotFigures = FALSE, verbose, ...)
+KLFDA_mk(X, Y, r, order, regParam, usekernel = TRUE, fL = 0.5, priors, tol, reg, metric, plotFigures = FALSE, verbose, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -85,15 +85,15 @@ Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 pack
 }
 
 
-\seealso{predict.KLFDA, klfda_1
+\seealso{predict.KLFDA_mk, klfda_1
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-btest=KLFDA(X=as.matrix(iris[,1:4]),Y=as.matrix(as.data.frame(iris[,5])),r=3,order=2,regParam=0.25, usekernel=TRUE,fL=0.5,priors=NULL,tol=1e-90,reg=0.01,metric =  'plain',plotFigures=FALSE,
-           verbose=TRUE)
-pred=predict.KLFDA(btest,as.matrix(iris[1:10,1:4]))
+#btest=KLFDA_mk(X=as.matrix(iris[,1:4]),Y=as.matrix(as.data.frame(iris[,5])),r=3,order=2,regParam=0.25, usekernel=TRUE,fL=0.5,priors=NULL,tol=1e-90,reg=0.01,metric =  'plain',plotFigures=FALSE,
+ #          verbose=TRUE)
+#pred=predict.KLFDA(btest,as.matrix(iris[1:10,1:4]))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{KLFDA}% use one of  RShowDoc("KEYWORDS")
+\keyword{KLFDA_mk}% use one of  RShowDoc("KEYWORDS")
 
