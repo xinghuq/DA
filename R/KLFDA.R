@@ -18,6 +18,12 @@ KLFDA=function(kdata, y, r,  metric = c("weighted", "orthonormalized",
 {
   require(lfda)
   k=kdata
+  
+  obj.classes = sort(unique(y));
+  obj.nClasses = length(obj.classes);
+ 
+ 
+  
   metric <- match.arg(metric)
   y <- t(as.matrix(y))
   n <- nrow(k)
@@ -45,7 +51,7 @@ KLFDA=function(kdata, y, r,  metric = c("weighted", "orthonormalized",
   tSb <- (tSb + t(tSb))/2
   tSw <- (tSw + t(tSw))/2
   F=tSb/tSw
-  require(lfda)
+
   eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(tSw + reg * diag(1, nrow(tSw), ncol(tSw)),tol=tol) %*% tSb, k = r,
                                         which = "LM"))
   eigVec <- Re(eigTmp$vectors)
@@ -53,11 +59,12 @@ KLFDA=function(kdata, y, r,  metric = c("weighted", "orthonormalized",
 
   Tr <- getMetricOfType(metric, eigVec, eigVal, n)
   Z <- t(t(Tr) %*% k)
-  out <- list(T = Tr, Z = Z)
+  out <- list(T = Tr, Z = Z,obj.classes = obj.classes,
+  obj.nClasses = obj.nClasses, kmat=kdata)
+  
   class(out) <- "KLFDA"
   return(out)
 }
-
 
 
 
@@ -409,7 +416,7 @@ return(list(bayes_proj=bayes_proj,bayes_Z=bayes_Z,kern_bayes_assigment_proj=kern
 }
   
 
-predict.KLFDA=function(obj, newdata){
+predict.KLFDA_mk=function(obj, newdata){
          ## Predict the class of new data
          # Arguments are the same as the X and Y in the constructor
          # function
