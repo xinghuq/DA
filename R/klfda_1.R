@@ -93,7 +93,7 @@ klfda_1=function (x, y,kernel=kernlab::polydot(degree = 1, scale = 1, offset = 1
   tSw <- (tSw + t(tSw))/2 # final within-class cluster matrix
   
   # find generalized eigenvalues and normalized eigenvectors of the problem
-  eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(tSw + reg * diag(1, nrow(tSw), ncol(tSw)),tol=tol,bounds = list(a=c(X> 0))) %*% tSb,
+  eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(tSw + reg * diag(1, nrow(tSw), ncol(tSw)),tol=tol,bounds = list(a=c(x> 0))) %*% tSb,
                                            k = r,which ='LM')) # r largest magnitude eigenvalues
   eigVec <- Re(eigTmp$vectors) # the raw transforming matrix
   eigVal <- as.matrix(Re(eigTmp$values))
