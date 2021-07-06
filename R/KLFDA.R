@@ -460,7 +460,7 @@ predict.KLFDA_mk=function(obj, newdata){
    ## other functions  0.023329207797073   
           
                
-        project_data = function(obj, X, nDims){
+  project_data = function(obj, X, nDims,obj.trainData, newdata, obj.order){
          ## Project data on the discriminant axes
          # Arguments:
          # - X: same as in the constructor function
@@ -469,10 +469,9 @@ predict.KLFDA_mk=function(obj, newdata){
          
          K = multinomial_kernel(obj.trainData, newdata, obj.order);
         #K = K / obj.nObservations;
-         projData = K %*% eigVec[, 1 : nDims];
-         Z=K%*%Tr
-        }
-        
+         projData = K %*% obj$eigVec[, 1 : nDims];
+         Z=K%*%obj$Tr
+        }    
         
         
 KL_divergence=function(obj){
