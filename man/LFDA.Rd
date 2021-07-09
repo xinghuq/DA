@@ -8,7 +8,11 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-LFDA(x, y, r, prior = proportions, CV = FALSE, usekernel = TRUE, fL = 0, tol, kernel = "gaussian", metric = c("orthonormalized", "plain", "weighted"), knn = 5, ...)
+LFDA(x, y, r, prior = proportions,
+CV = FALSE, usekernel = TRUE, fL = 0, 
+tol, kernel = "gaussian", 
+metric = c("orthonormalized", "plain", "weighted"), 
+knn = 5, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,7 +49,9 @@ LFDA(x, y, r, prior = proportions, CV = FALSE, usekernel = TRUE, fL = 0, tol, ke
   \item{knn}{ Number of nearest neighbors
 %%     ~~Describe \code{knn} here~~
 }
- 
+  \item{...}{ additional arguments for the classifier
+%%     ~~Describe \code{plotFigures} here~~
+} 
 
 }
 \details{The results give the classified classes and the posterior possibility of each class using different classifier.
@@ -77,18 +83,12 @@ Pierre Enel (2020). Kernel Fisher Discriminant Analysis (https://www.github.com/
 \author{qinxinghu@gmail.com
 %%  ~~who you are~~
 }
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
-LFDAtest=LFDA(iris[,1:4],y=iris[,5],r=3, CV=FALSE,usekernel = TRUE, fL = 0,kernel="gaussian",metric = "plain",knn = 6,tol = 1)
-LFDApred=predict.LFDA(LFDAtest,newdata=iris[1:10,1:4],prior=NULL)
+LFDAtest=LFDA(iris[,1:4],y=iris[,5],r=3, 
+CV=FALSE,usekernel = TRUE, fL = 0,
+kernel="gaussian",metric = "plain",knn = 6,tol = 1)
+LFDApred=predict.LFDA(LFDAtest,iris[1:10,1:4],prior=NULL)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -1,6 +1,6 @@
 ---
-title: "Ecological and Evolutionary Inference using Supervised Learning both Visually and Statistically "
-subtitle: "Part 1. Population structure inference using supervised learning"
+title: "Evolutionary Inference using Supervised Learning"
+subtitle: "Part 1. Population structure inference using discriminant analysis"
 author: "Xinghu Qin  --School of Biology, University of St Andrews"
 #date: "`r Sys.Date()`"
 date: "30-03-2020"
@@ -30,18 +30,19 @@ knitr::opts_chunk$set(
 
 ##Install DA
 
-```{r, install}
+```{r, library}
 #Install from CRAN
 #install.packages("DA")
 ## or you can get the latest version of HierDpart from github
-library(devtools)
-
+#library(devtools)
 #install_github("xinghuq/DA")
 
 library("DA")
+library("kernlab")
 
 ```
-```{r, library}
+
+```{r}
 # example genepop file
 f <- system.file('extdata',package='DA')
 infile <- file.path(f, "Cattle_breeds_allele_frequency.csv")
@@ -101,6 +102,7 @@ Discriminant analysis of kernel principal components (DAKPC) is a variant of DAP
 Below is the implementation of DAKPC.
 
 ```{r fig3, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
+
 cattle_ldakpc=LDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3)
 
  cols=rainbow(length(unique(cattle_pop$x)))
@@ -118,6 +120,7 @@ LDAKPC has the similar result with DAPC.
 In comparison to LDA, LFDA not only considers the variation between classes, but also the variation within classes. Thus, LFDA can discriminate the multimodal data while LDA can not. LFDA is an upgraded version of LDA.
 
 ```{r fig4, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
+
 cattle_lfda=LFDA(cattle_geno[,-1],cattle_pop$x,r=3,tol=1E-3)
 
 cols=rainbow(length(unique(cattle_pop$x)))
@@ -135,6 +138,8 @@ Fig.4 LFDA plot of 15 cattle breeds.
 As LFDA is more advanced than LDA, I adopt LFDA for discriminant analysis on the basis of LDAKPC. Now we get LFDAKPC, Local (Fisher) Discriminant Analysis of Kernel Principal Components (LFDAKPC). Below is the implementation of LFDAKPC.
 
 ```{r fig5, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
+
+
 cattle_lfdakpc=LFDAKPC(cattle_geno[,-1],cattle_pop$x,n.pc=3,tol=1E-3)
 
 cols=rainbow(length(unique(cattle_pop$x)))
@@ -159,7 +164,7 @@ Kernel local (Fisher) discriminant analysis (KLFDA) is a kernelized version of l
 
 
 ```{r fig6, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
-cattle_klfda=klfda_1(as.matrix(cattle_geno[,-1]),as.matrix(cattle_pop$x),r=3,tol=1E-10,prior = NULL)
+cattle_klfda=klfda_1(as.matrix(cattle_geno[,-1]),as.factor(cattle_pop$x),r=3,tol=1E-10,prior = NULL)
 
 cols=rainbow(length(unique(cattle_pop$x)))
 p5 <- plot_ly(as.data.frame(cattle_klfda$Z), x =cattle_klfda$Z[,1], y =cattle_klfda$Z[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 

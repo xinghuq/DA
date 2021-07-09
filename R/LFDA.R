@@ -1,7 +1,7 @@
 
 
 LFDA<- function(x, y, r,prior = proportions, CV=FALSE,usekernel = TRUE, fL = 0,tol,kernel="gaussian",metric = c("orthonormalized","plain","weighted"),knn = 5,...) {
- require(lfda)
+ requireNamespace("lfda")
    Y=as.factor(y)
   cl <- match.call()
   tol=tol
@@ -88,10 +88,11 @@ LFDA<- function(x, y, r,prior = proportions, CV=FALSE,usekernel = TRUE, fL = 0,t
   Tr <- getMetricOfType(metric, eigVec, eigVal, d)
   # scaling is equal to Tr
   Z <- t(t(Tr) %*% x)
-  require(klaR) ## FOR Nativebaye function
+ # require(klaR) ## FOR Nativebaye function
  bayes_judgement=Mabayes(Z,Y,var.equal = FALSE,tol=tol)
-  bayes=NaiveBayes(as.data.frame(Z), Y, prior=prior, usekernel=usekernel, fL = 0,kernel=kernel,...)
-  bayes_assigment=predict(bayes)
+  bayes=klaR::NaiveBayes(as.data.frame(Z), Y, prior=prior, usekernel=usekernel, fL = 0,kernel=kernel,...)
+ 
+   bayes_assigment=predict.NaiveBayes(bayes)
   
   #  group.means1 <- tapply(c(Z), list(rep(g, p), col(Z)), mean)
   if(CV) {
@@ -153,23 +154,147 @@ LFDA<- function(x, y, r,prior = proportions, CV=FALSE,usekernel = TRUE, fL = 0,t
             class = "LFDA")
 }
 
-predict.LFDA=function(object,newdata,prior,dimen,...){
+
+
+
+
+
+dkernel<-function(x, kernel=stats::density(x), interpolate=FALSE, ...)
+{
+  foo<-function(x,kernel,n)
+  {
+    if (x <= kernel$x[1]) return(kernel$y[1])
+    else if (x >= kernel$x[n]) return(kernel$y[n])
+    else 
+    {
+      pos<-which.min((kernel$x-x)^2)
+      if (kernel$x[pos]>x) return(mean(c(kernel$y[pos],kernel$y[(pos-1)])))
+      else return(mean(c(kernel$y[pos],kernel$y[(pos+1)])))
+    }
+  }
+  n<-length(kernel$x)
+  if (interpolate) y<-sapply(x,foo,kernel=kernel,n=n)
+  else y<-sapply(x,FUN=function(y){kernel$y[(which.min((kernel$x-y)^2))]})
+  return(y)
+}
+
+predict.NaiveBayes <- function (object, newdata, threshold = 0.001, ...)
+{
+  if (missing(newdata))
+    newdata <- object$x
+  if (sum(is.element(colnames(newdata), object$varnames)) < length(object$varnames))
+    stop("Not all variable names used in object found in newdata") 
+  ## (both colnames & varnames are given) & (varnames is a subset of colnames):
+  newdata <- data.frame(newdata[, object$varnames])
+  nattribs <- ncol(newdata)
+  islogical <- sapply(newdata, is.logical)
+  isnumeric <- sapply(newdata, is.numeric)
+  #   L <- sapply(
+  #      1:nrow(newdata),
+  #      function(i)
+  #      {
+  #         ndata <- as.numeric(newdata[i, ])
+  #         L <-  sapply(
+  #               1:nattribs,
+  #               function(v)
+  #               {
+  #                  nd <- ndata[v]
+  #                  if (is.na(nd))
+  #                  {
+  #                     rep(1, length(object$apriori))
+  #                  } else {
+  #                     prob <- if (isnumeric[v])
+  #                     {
+  #                        msd <- object$tables[[v]]
+  #                        if (object$usekernel) sapply(
+  #                           msd,
+  #                           FUN = function(y)
+  #                           {
+  #                              dkernel(x = nd, kernel = y, ...)
+  #                           })
+  #                        else dnorm(nd, msd[, 1], msd[, 2])
+  #                     }
+  #                     else object$tables[[v]][, nd]
+  #
+  #                     prob
+  #                  }
+  #               }
+  #               )
+  #
+  #         L <- ifelse(L < threshold, threshold, L)
+  #         # normalize by p(x) = p(x_1|y) + ... + p(x_p|y)
+  #         Lnorm <- apply(L, 2, function(x, y) x/sum(x * y), y = as.vector(object$apriori))
+  #         # get product
+  #         Lprod <- apply(Lnorm, 1, prod)
+  #         # normalize by posterior
+  #         Lpost <- object$apriori * Lprod
+  #         Lpost <- Lpost/sum(Lpost)
+  #         Lpost
+  #      }
+  #   )
+  newdata <- data.matrix(newdata)
+  Lfoo <- function(i) {
+    tempfoo <- function(v) {
+      nd <- ndata[v]
+      if (is.na(nd))
+        return(rep(1, length(object$apriori)))
+      prob <-
+        if (isnumeric[v]) {
+          msd <- object$tables[[v]]
+          if (object$usekernel)
+            sapply(msd, FUN = function(y)
+              dkernel(x = nd, kernel = y, ...))
+          else stats::dnorm(nd, msd[, 1], msd[, 2])
+        } else if (islogical[v]) {
+          object$tables[[v]][, nd + 1]
+        } else {
+          object$tables[[v]][, nd]
+        }
+      prob[prob == 0] <- threshold
+      return(prob)
+    }
+    
+    ndata <- newdata[i, ]
+    tempres <- log(sapply(1:nattribs, tempfoo))
+    L <- log(object$apriori) + rowSums(tempres)
+    
+    #        L <- exp(L)
+    #        L/sum(L)
+    
+    if(isTRUE(all.equal(sum(exp(L)), 0)))
+      warning("Numerical 0 probability for all classes with observation ", i)
+    L
+  }
+  L <- sapply(1:nrow(newdata), Lfoo)
+  
+  classdach <- factor(object$levels[apply(L, 2, which.max)],
+                      levels = object$levels)
+  posterior <- t(apply(exp(L), 2, function(x) x/sum(x)))
+  
+  #                  print(str(posterior))
+  colnames(posterior) <- object$levels
+  rownames(posterior) <- names(classdach) <- rownames(newdata)
+  return(list(class = classdach, posterior = posterior))
+}
+
+#' @export
+predict.LFDA=function(object,prior=NULL,testData,...){
   tol=object$tol
-  newdata=as.matrix(newdata)
+  testData=as.matrix(testData)
   Z=object$Z
   Y=object$Y
   Trans=as.matrix(object$T)
-  Z2=newdata %*% Trans 
+  Z2=testData %*% Trans 
   if (is.null(prior)==TRUE){
     prior=object$prior
   }
   usekernel=object$usekernel
   fL=object$fL
   kernel=object$kernel
-  require(klaR) ## FOR Nativebaye function
+  # require(klaR) ## FOR Nativebaye function
   bayes_jud_pred=Mabayes(TrnX=Z,TrnG=Y,TstX = Z2,var.equal = FALSE,tol=tol)
-  bayes=NaiveBayes(as.data.frame(Z), Y, prior, usekernel, fL,kernel,bw = "nrd0", adjust = 1,weights = NULL, window = kernel, give.Rkern = FALSE,...)
-  Nbayes_assig_pred=predict(bayes,newdata=as.data.frame(Z2))
+  bayes=klaR::NaiveBayes(as.data.frame(Z), Y, prior, usekernel, fL,kernel,bw = "nrd0", adjust = 1,weights = NULL, window = kernel, give.Rkern = FALSE,...)
+  Nbayes_assig_pred=predict.NaiveBayes(bayes,newdata=as.data.frame(Z2))
   ng=length(object$lev)
   
   means <- colSums(prior*object$means)
@@ -177,7 +302,7 @@ predict.LFDA=function(object,newdata,prior,dimen,...){
   x <-Z2
   dm <- scale(object$means, center = means, scale = FALSE) %*% Trans
   
-  dimen <- if(missing(dimen)) length(object$svd) else min(dimen, length(object$svd))
+  dimen <- length(object$svd) 
   N <- object$N
   
   dm <- dm[, 1L:dimen, drop = FALSE]
@@ -191,8 +316,3 @@ predict.LFDA=function(object,newdata,prior,dimen,...){
   dimnames(posterior) <- list(rownames(x), nm)
   list(class = cl, posterior = posterior, x = x[, 1L:dimen, drop = FALSE],bayes_jud_pred=bayes_jud_pred,Nbayes_assig_pred=Nbayes_assig_pred)
 }
-
-
-
-
-

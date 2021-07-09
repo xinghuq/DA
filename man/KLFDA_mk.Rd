@@ -8,7 +8,10 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-KLFDA_mk(X, Y, r, order, regParam, usekernel = TRUE, fL = 0.5, priors, tol, reg, metric, plotFigures = FALSE, verbose, ...)
+KLFDA_mk(X, Y, r, order, regParam, 
+usekernel = TRUE, fL = 0.5, 
+priors, tol, reg, metric, 
+plotFigures = FALSE, verbose, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -46,6 +49,12 @@ KLFDA_mk(X, Y, r, order, regParam, usekernel = TRUE, fL = 0.5, priors, tol, reg,
 %%     ~~Describe \code{metric} here~~
 }
   \item{plotFigures}{ whether to plot the reduced features, 3D plot
+%%     ~~Describe \code{plotFigures} here~~
+}
+  \item{verbose}{ silence the processing
+%%     ~~Describe \code{plotFigures} here~~
+}
+  \item{...}{ additional arguments for the classifier
 %%     ~~Describe \code{plotFigures} here~~
 }
 
@@ -89,9 +98,12 @@ Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 pack
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-#btest=KLFDA_mk(X=as.matrix(iris[,1:4]),Y=as.matrix(as.data.frame(iris[,5])),r=3,order=2,regParam=0.25, usekernel=TRUE,fL=0.5,priors=NULL,tol=1e-90,reg=0.01,metric =  'plain',plotFigures=FALSE,
- #          verbose=TRUE)
-#pred=predict.KLFDA(btest,as.matrix(iris[1:10,1:4]))
+btest=KLFDA_mk(X=as.matrix(iris[,1:4]),
+Y=as.matrix(as.data.frame(iris[,5])),r=3,order=2,regParam=0.25, 
+usekernel=TRUE,fL=0.5,
+priors=NULL,tol=1e-90,reg=0.01,metric =  'plain',plotFigures=FALSE,
+verbose=TRUE)
+#pred=predict.KLFDA_mk(btest,as.matrix(iris[1:10,1:4]))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -9,8 +9,8 @@ LFDAKPC <- function(x,y, n.pc,usekernel = FALSE, fL = 0,kernel.name = "rbfdot", 
   class(LFDAKPC ) <- "Local Fisher Discriminant Analysis of Kernel principle components"
   
   # kpca
-  require(kernlab)
-  LFDAKPC.train <- kpca(~.,data=x,kernel = kernel.name,
+ ## require(kernlab)
+  LFDAKPC.train <- kernlab::kpca(~.,data=x,kernel = kernel.name,
                        kpar = kpar,
                        th = threshold,...)
   if (is.null(n.pc)){
@@ -33,21 +33,26 @@ LFDAKPC <- function(x,y, n.pc,usekernel = FALSE, fL = 0,kernel.name = "rbfdot", 
   return(LFDAKPC )
 }
 
+
 ### once predict, r or n.pc should be the same with the input data, or the transformation will not work
-predict.LFDAKPC  <- function(object = obj,prior, testData = data){
+
+#' @export
+predict.LFDAKPC  <- function(object,prior=NULL, testData,...){
   n.pc=object$n.pc
   # kpca
   if(is.null(prior)==TRUE){
-  prior=object$LFDAKPC$prior
+    prior=object$LFDAKPC$prior
   }
   predict.kpca <- kernlab::predict(object = object$kpca,
-                          testData)[,1:n.pc]
+                                   testData)[,1:n.pc]
   
   # kpca + lfda = klfdapc
   predicted_LDs <- predict.kpca %*% object$LFDAKPC$Tr
   predict.LFDAKPC <- predict.LFDA(object$LFDAKPC,prior,
-                 newdata = predict.kpca)
+                                  testData = predict.kpca,...)
   
   return(list(predicted_LDs=predicted_LDs,predict.LFDAKPC=predict.LFDAKPC))
   
 }
+
+

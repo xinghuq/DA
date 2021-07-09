@@ -8,7 +8,10 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-klfda_1(x, y, kernel = polydot(degree = 1, scale = 1, offset = 1), r = 20, tol, prior, CV = FALSE, usekernel = TRUE, fL = 0.5, metric = c("weighted", "orthonormalized", "plain"), knn = 6, reg = 0.001, ...)
+klfda_1(x, y, kernel = kernlab::polydot(degree = 1, scale = 1, offset = 1), 
+r = 20, tol, prior, CV = FALSE, usekernel = TRUE, 
+fL = 0.5, metric = c("weighted", "orthonormalized", "plain"), 
+knn = 6, reg = 0.001, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -48,7 +51,9 @@ klfda_1(x, y, kernel = polydot(degree = 1, scale = 1, offset = 1), r = 20, tol, 
   \item{reg}{ The regularization parameter
 %%     ~~Describe \code{reg} here~~
 }
-
+  \item{...}{ additional arguments for the classifier
+%%     ~~Describe \code{plotFigures} here~~
+}
 }
 \details{
 This function empolys three different classifiers, the basic linear classifier, the Mabayes (Bayes rule and the Mahalanobis distance), and Niave Bayes classifier.
@@ -112,8 +117,11 @@ Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 pack
 }
 \examples{
 require(kernlab)
-btest=klfda_1(as.matrix(iris[,1:4]),as.matrix(as.data.frame(iris[,5])),kernel=kernlab::rbfdot(sigma = 0.1),r=3,prior=NULL,tol=1e-90,reg=0.01,metric =  'plain')
-pred=predict.klfda_1(btest,as.matrix(iris[1:10,1:4]))
+btest=klfda_1(as.matrix(iris[,1:4]),as.matrix(as.data.frame(iris[,5])),
+kernel=kernlab::rbfdot(sigma = 0.1),
+r=3,prior=NULL,tol=1e-90,
+reg=0.01,metric =  'plain')
+pred=predict.klfda_1(btest,testData=as.matrix(iris[1:10,1:4]),prior=NULL)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

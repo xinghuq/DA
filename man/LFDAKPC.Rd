@@ -8,7 +8,11 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-LFDAKPC(x, y, n.pc, usekernel = FALSE, fL = 0, kernel.name = "rbfdot", kpar = list(0.001), kernel = "gaussian", threshold = 1e-05, ...)
+LFDAKPC(x, y, n.pc, 
+usekernel = FALSE, fL = 0, 
+kernel.name = "rbfdot", 
+kpar = list(0.001), kernel = "gaussian", 
+threshold = 1e-05, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -52,19 +56,11 @@ Hyper-parameters for user defined kernels can be passed through the kpar paramet
   \item{threshold}{	
 the threshold for kpc: value of the eigenvalue under which principal components are ignored (only valid when features = 0). (default : 0.0001)
 }
+  \item{...}{ additional arguments for the classifier
+%%     ~~Describe \code{plotFigures} here~~
 }
-\details{
-Sugiyama, M (2007). Dimensionality reduction of multimodal labeled data by local Fisher discriminant analysis. Journal of Machine Learning Research, vol.8, 1027-1061.
-
-Sugiyama, M (2006). Local Fisher discriminant analysis for supervised dimensionality reduction. In W. W. Cohen and A. Moore (Eds.), Proceedings of 23rd International Conference on Machine Learning (ICML2006), 905-912.
-
-Tang, Y., & Li, W. (2019). lfda: Local Fisher Discriminant Analysis inR. Journal of Open Source Software, 4(39), 1572.
-
-
-Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 package for kernel methods in R. Journal of statistical software, 11(9), 1-20.
-
-%%  ~~ If necessary, more details than the description above ~~
 }
+
 \value{
 \item{kpca}{Results of kernel principal component analysis. Kernel Principal Components Analysis is a nonlinear form of principal component analysis}
 \item{kpc}{Kernel principal components. The scores of the components}
@@ -75,6 +71,15 @@ Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 pack
 
 }
 \references{
+Sugiyama, M (2007). Dimensionality reduction of multimodal labeled data by local Fisher discriminant analysis. Journal of Machine Learning Research, vol.8, 1027-1061.
+
+Sugiyama, M (2006). Local Fisher discriminant analysis for supervised dimensionality reduction. In W. W. Cohen and A. Moore (Eds.), Proceedings of 23rd International Conference on Machine Learning (ICML2006), 905-912.
+
+Tang, Y., & Li, W. (2019). lfda: Local Fisher Discriminant Analysis inR. Journal of Open Source Software, 4(39), 1572.
+
+
+Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 package for kernel methods in R. Journal of statistical software, 11(9), 1-20.
+
 %% ~put references to the literature/web site here ~
 }
 \author{qinxinghu@gmail.com

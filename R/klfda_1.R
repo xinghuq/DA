@@ -11,8 +11,8 @@ klfda_1=function (x, y,kernel=kernlab::polydot(degree = 1, scale = 1, offset = 1
   obj.trainClass = as.factor(y)
   obj.classes = sort(unique(obj.trainClass));
   obj.nClasses = length(obj.classes)
-  requireNamespace("kernlab")
-  k=kernelMatrix(kernel, obj.trainData,obj.trainData)
+ # require("kernlab")
+  k=kernlab::kernelMatrix(kernel, obj.trainData,obj.trainData)
   #k=multinomial_kernel(obj.trainData,obj.trainData,order=2)
   
   obj.nObservations=dim(obj.trainData)[1]
@@ -65,7 +65,7 @@ klfda_1=function (x, y,kernel=kernlab::polydot(degree = 1, scale = 1, offset = 1
   
   tSb <- mat.or.vec(n, n) # initialize between-class scatter matrix (to be maximized)
   tSw <- mat.or.vec(n, n) # initialize within-class scatter matrix (to be minimized)
-  require(lfda)
+  requireNamespace("lfda")
   # compute the optimal scatter matrices in a classwise manner
   for (i in unique(as.vector(t(y)))) {
     
@@ -267,11 +267,11 @@ klfda_1=function (x, y,kernel=kernlab::polydot(degree = 1, scale = 1, offset = 1
   #  PLD1=svd[1]^2/sum(svd^2)
   # PLD2=svd[2]^2/sum(svd^2)
   # PLD=as.data.frame(cbind(PLD1,PLD2))
-  require(WMDB) ## FOR dbayes function the  function
+  #require(WMDB) ## FOR dbayes function the  function
   bayes_judgement=Mabayes(Z,obj.trainClass,var.equal = FALSE,tol=tol)
-  require(klaR)
-  bayes=NaiveBayes(as.data.frame(Z), obj.trainClass, prior=obj.priors, usekernel, fL = fL,...)
-  bayes_assigment=predict(bayes,threshold = 0.001,dkernel=kernel)
+#  require(klaR)
+  bayes=klaR::NaiveBayes(as.data.frame(Z), obj.trainClass, prior=obj.priors, usekernel, fL = fL,...)
+  bayes_assigment=predict.NaiveBayes(bayes,threshold = 0.001)
   # t_lda=lda(Z,obj.trainClass,...)
   cl <- match.call()
   cl[[1L]] <- as.name("klfda")
@@ -279,34 +279,55 @@ klfda_1=function (x, y,kernel=kernlab::polydot(degree = 1, scale = 1, offset = 1
                  obj.priors=obj.priors,T=Tr,obj.nClasses=obj.nClasses,obj.trainData=obj.trainData, obj.trainClass=obj.trainClass, Z=Z,lev = lev, N = n, call = cl),class = "klfda")
 }
 
-predict.klfda_1=function(object,newdata,dimen,...){
+## other functions  0.023329207797073   
+
+
+project_data = function(object,X, nDims,obj.trainData, newdata, obj.order){
+  ## Project data on the discriminant axes
+  # Arguments:
+  # - X: same as in the constructor function
+  # - nDims: integre, the number of dimensions on which the data
+  # is going to be projected
+  
+  K = multinomial_kernel(obj.trainData, newdata, obj.order)
+  #K = K / obj.nObservations;
+  projData = K %*% object$eigVec[, 1 : nDims]
+  Z=K%*%object$Tr
+}
+
+
+#' @export
+predict.klfda_1=function(object,prior=NULL,testData,...){
   tol=object$tol
-  nObsTest=dim(newdata)[1]
-  nFeaturesTest = dim(newdata)[2]
+  nObsTest=dim(testData)[1]
+  nFeaturesTest = dim(testData)[2]
   obj.nClasses=object$obj.nClasses
   obj.nFeatures=object$obj.nFeatures
   obj.nObservations=object$obj.nObservations
-  require(kernlab)
+  ## requireNamespace("kernlab")
   kernel=object$kernel
-  knewdata=kernelMatrix(kernel, object$obj.trainData,newdata)
-  #knewdata=multinomial_kernel(object$obj.trainData,newdata,order=2)
-  #newdata=as.matrix(newdata)
-  knewdata=knewdata/obj.nObservations
+  ktestData=kernlab::kernelMatrix(kernel, object$obj.trainData,testData)
+  #ktestData=multinomial_kernel(object$obj.trainData,testData,order=2)
+  #testData=as.matrix(testData)
+  ktestData=ktestData/obj.nObservations
   Z=object$Z
   Y=object$obj.trainClass
   Trans=as.matrix(object$T)
-  #Z2=as.matrix(knewdata) %*% Trans 
-  Z2=t(as.matrix(knewdata)) %*% Trans 
+  #Z2=as.matrix(ktestData) %*% Trans 
+  Z2=t(as.matrix(ktestData)) %*% Trans 
   # if (is.null(prior)==TRUE){
-  prior=object$obj.priors
+  if (is.null(prior))
+    prior=object$obj.priors
+  else prior=prior  
+  
   # }
   usekernel=object$usekernel
   fL=object$fL
   # t_lda=object$t_lda
-  require(klaR) ## FOR Nativebaye function
+  #requireNamespace("klaR") ## FOR Nativebaye function
   bayes_jud_pred=Mabayes(Z,Y,TstX = Z2,var.equal = FALSE,tol=tol)
   # bayes=NaiveBayes(Z, Y, prior, usekernel, fL,kernel,bw = "nrd0", adjust = 1,weights = NULL, window = kernel, give.Rkern = FALSE,...)
-  Nbayes_assig_pred=predict(object$bayes,as.data.frame(Z2),threshold = 0.001,dkernel=kernel,...)
+  Nbayes_assig_pred=predict.NaiveBayes(object$bayes,as.data.frame(Z2),threshold = 0.001,dkernel=kernel,...)
   #  p_lda=predict(t_lda,Z2,...)
   
   ## Retrieving the likelihood of each test point
@@ -359,7 +380,7 @@ predict.klfda_1=function(object,newdata,dimen,...){
   x <-Z2
   dm <- scale(object$means, center = means, scale = FALSE) %*% Trans
   
-  dimen <- if(missing(dimen)) length(object$svd) else min(dimen, length(object$svd))
+  dimen <- length(object$svd) 
   N <- object$N
   
   dm <- dm[, 1L:dimen, drop = FALSE]
@@ -373,9 +394,3 @@ predict.klfda_1=function(object,newdata,dimen,...){
   dimnames(posterior) <- list(rownames(x), nm)
   list(class = cl, posterior = posterior,posteriors1=posteriors1, posteriors.class1=posteriors.class1,x = x[, 1L:dimen, drop = FALSE],bayes_jud_pred=bayes_jud_pred,bayes_assig_pred=Nbayes_assig_pred)
 }
-
-
-
-
-
-

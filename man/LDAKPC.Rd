@@ -8,7 +8,10 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-LDAKPC(x, y, n.pc, usekernel = FALSE, fL = 0, kernel.name = "rbfdot", kpar = list(0.001), kernel = "gaussian", threshold = 1e-05, ...)
+LDAKPC(x, y, n.pc, usekernel = FALSE, 
+fL = 0, kernel.name = "rbfdot", 
+kpar = list(0.001), kernel = "gaussian", 
+threshold = 1e-05, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -53,10 +56,9 @@ Hyper-parameters for user defined kernels can be passed through the kpar paramet
 the threshold for kpc: value of the eigenvalue under which principal components are ignored (only valid when features = 0). (default : 0.0001)
 %%     ~~Describe \code{threshold} here~~
 }
-
+  \item{...}{ additional arguments for the classifier
+%%     ~~Describe \code{plotFigures} here~~
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
 %%  ~Describe the value returned
@@ -80,15 +82,7 @@ Mika, S., Ratsch, G., Weston, J., Scholkopf, B., & Mullers, K. R. (1999, August)
 qinxinghu@gmail.com
 %%  ~~who you are~~
 }
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 data(iris)
 train=LDAKPC(iris[,1:4],y=iris[,5],n.pc=3,kernel.name = "rbfdot")

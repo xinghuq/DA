@@ -1,5 +1,4 @@
 
-
 multinomial_kernel=function(data1,data2,order, beta, gamma){
   ## Multinomial Kernel
   # Arguments:
@@ -46,8 +45,8 @@ KLFDA_mk=function(X, Y, r,order, regParam, usekernel=TRUE,fL=0.5,priors,tol,reg,
   # a class and each value coresponding to the prior probability
   # associated with this class. Default value is the empirical
   # probability: number of obs in a class / total number of obs
- require(lfda)
-  require(MASS)
+  requireNamespace("lfda")
+  requireNamespace("MASS")
    n=ncol(X)
   if (nrow(X)!=nrow(Y))
     stop(" Number of observations for training data ,X,Y should be the same")
@@ -174,9 +173,9 @@ eigVal <- as.matrix(Re(eigTmp$values))
    
   
    
-   library(plotly)
-   cols=rainbow(obj.nClasses)
-   p1 <- plot_ly(as.data.frame(Z), x =Z[,1], y =Z[,2], z =Z[,3], color = obj.trainClass,colors=cols,...) %>% 
+  # library(plotly)
+   cols=grDevices::rainbow(obj.nClasses)
+   p1 <- plotly::plot_ly(as.data.frame(Z), x =Z[,1], y =Z[,2], z =Z[,3], color = obj.trainClass,colors=cols,...) %>% 
      add_markers() %>%
      layout(scene = list(xaxis = list(title = 'LDA1'),
                          yaxis = list(title = 'LDA2'),
@@ -332,11 +331,11 @@ for (j in 1 : obj.nObservations){
 posteriors.class=factor(obj.classes[max.col(posteriors)], levels = obj.classes)
 posteriors.classZ=factor(obj.classes[max.col(posteriors1)], levels = obj.classes)
 
-require(klaR)
-bayes_proj=NaiveBayes(as.data.frame(projData), as.factor(obj.trainClass), prior=obj.priors, usekernel=usekernel, fL = fL,...)
-kern_bayes_assigment_proj=predict(bayes_proj)
-bayes_Z=NaiveBayes(as.data.frame(Z), as.factor(obj.trainClass), prior=obj.priors, usekernel=usekernel, fL = fL,...)
-kern_bayes_assigment_Z=predict(bayes_Z)
+#requireNamespace("klaR")
+bayes_proj=klaR::NaiveBayes(as.data.frame(projData), as.factor(obj.trainClass), prior=obj.priors, usekernel=usekernel, fL = fL,...)
+kern_bayes_assigment_proj=predict.NaiveBayes(bayes_proj)
+bayes_Z=klaR::NaiveBayes(as.data.frame(Z), as.factor(obj.trainClass), prior=obj.priors, usekernel=usekernel, fL = fL,...)
+kern_bayes_assigment_Z=predict.NaiveBayes(bayes_Z)
 
 return(list(bayes_proj=bayes_proj,bayes_Z=bayes_Z,kern_bayes_assigment_proj=kern_bayes_assigment_proj,kern_bayes_assigment_Z=kern_bayes_assigment_Z,posteriors=posteriors,posteriorsZ=posteriors1,posteriors.class=posteriors.class,posteriors.classZ=posteriors.classZ, obj.order=obj.order, obj.priors=obj.priors,obj.trainData=obj.trainData, obj.nClasses=obj.nClasses, obj.nFeatures=obj.nFeatures,classVecsTrain=classVecsTrain,obj.classes=obj.classes,obj.nObsPerClas=obj.nObsPerClas,obj.means=obj.means,obj.means0=obj.means0,obj.means1=obj.means1,obj.covInv=obj.covInv,obj.covInv1=obj.covInv1,factor=factor,factor1=factor1,eigVec=eigVec,eigVal=eigVal,Z=Z,Tr=Tr,LD=projDataC))
 #obj.likelihoodFuns[[i]] =  factor * exp(-0.5 * (x - obj.means[[i]] * obj.covInv[[i]] * (x - t(obj.means[[i]]))
@@ -344,160 +343,122 @@ return(list(bayes_proj=bayes_proj,bayes_Z=bayes_Z,kern_bayes_assigment_proj=kern
 }
   
 
-predict.KLFDA_mk=function(obj, newdata){
-         ## Predict the class of new data
-         # Arguments are the same as the X and Y in the constructor
-         # function
-         ## X is test data
-         # Checking arguments
-        
-         #if (nrow(X)!= length(Y)) stop("number of class and number of observations are not equal")
-         nObsTest=dim(newdata)[1]
-         nFeaturesTest = dim(newdata)[2]
-         obj.nClasses=obj$obj.nClasses
-         obj.nFeatures=obj$obj.nFeatures
-         if (obj.nFeatures != nFeaturesTest)
-         stop('The number of features must be constant across classes and train/test data')
-        
-         
-      #   classVecsTest = matrix(data=NA,nrow=nObsTest, ncol=obj.nClasses);
-       #  Yid = matrix(data=0,nrow=nObsTest, ncol=1);
-        # for (i in 1:obj.nClasses){
-         #clas = obj.classes[i];
-         #classVecsTest[,i] = match(Y, clas,nomatch=0)
-         #Yid[as.logical(classVecsTest[,i])] = i;
-         #}
-         obj.trainData=obj$obj.trainData
-         obj.order=obj$obj.order
-         ## Computing the test kernel matrix
-         K2 = multinomial_kernel(obj.trainData, newdata, obj.order);
-        # K2 = K2/ obj.nObservations;
-         eigVec=obj$eigVec
-         Tr=obj$Tr
-                  ## Projecting data onto the discriminant axes
-        # rpdTest = K2 %*% eigVec[, (1 : (obj.nClasses - 1))] # Reduced projected data test
-         rpdTest = K2 %*% eigVec
-         Z2 <- K2 %*% Tr
-         
-         
-         require(klaR) ## FOR Nativebaye function
-         
-         #bayes=NaiveBayes(Z, Y, prior, usekernel, fL,kernel,bw = "nrd0", adjust = 1,weights = NULL, window = kernel, give.Rkern = FALSE,...)
-         Kern_Nbayes_assig_pred_proj=predict(obj$bayes_proj,as.data.frame(rpdTest))
-         Kern_Nbayes_assig_pred_Z=predict(obj$bayes_Z,as.data.frame(Z2))
-         ## Retrieving the likelihood of each test point
-         likelihoods0 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
-         likelihoods = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
-         likelihoods1 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
-         posteriors0 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
-         posteriors = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
-         posteriors1 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
-         dist0=matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
-         dist=matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
-         dist1=matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
-         ## here from the  scripts  of Perr, each row of new data has nclass of 
-        # (rpdTest[j,] - obj.means[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means[[i]])
-         obj.means=obj$obj.means
-         obj.means0=obj$obj.means0
-         obj.means1=obj$obj.means1
-         obj.covInv=obj$obj.covInv
-        
-         obj.covInv1=obj$obj.covInv1
-         factor=obj$factor
-         factor1=obj$factor1
-         obj.classes=obj$obj.classes
-         obj.priors=obj$obj.priors
-          for (j in 1 : nObsTest){
-          
-            for (i in 1 : obj.nClasses){
-        # clas = obj.classes[i]
-           
-           dist[j,i]=mean((rpdTest[j,] - obj.means[i]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means[i]))
-           #mean((rpdTest[j,] - obj.means0[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means0[[i]]))
-           dist0[j,i]=mean((rpdTest[j,] - obj.means0[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means0[[i]]))
-           dist1[j,i]=mean((Z2[j,] - obj.means1[[i]]) %*% obj.covInv1[[i]] * t(Z2[j,] -obj.means1[[i]]))
-          # likelihoods[[j]][[i]] =factor[[i]] * exp(-0.5 * (rpdTest[j,] - obj.means[i]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means[i]))
-         #likelihoods1 =factor[[i]] * exp(-0.5 * (rpdTest[j,] - obj.means0[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means0[[i]]))
-           likelihoods[j,i] =factor[[i]] * exp(-0.5 * dist[j,i])
-           likelihoods0[j,i] =factor[[i]] * exp(-0.5 * dist0[j,i])
-           likelihoods1[j,i] =factor1[[i]] * exp(-0.5 * dist1[j,i])
-           
-         
-         }
-         posteriors[j,] = likelihoods[j,] * obj.priors / sum(likelihoods[j,] * obj.priors)## rpdtest means using 
-         posteriors0[j,] = likelihoods0[j,] * obj.priors / sum(likelihoods0[j,] * obj.priors)##rpdtest
-         posteriors1[j,] = likelihoods1[j,] * obj.priors / sum(likelihoods1[j,] * obj.priors)## Z
-         }
-          #}
-          
-         
-         ## Predicting the class of each data point
-         
-         posteriors.class=factor(obj.classes[max.col(posteriors)], levels = obj.classes)
-         posteriors.class0=factor(obj.classes[max.col(posteriors0)], levels = obj.classes)
-         posteriors.class1=factor(obj.classes[max.col(posteriors1)], levels = obj.classes)
-         
-         
-         ## Creating the output variables
-         
-         results = list();
-         results$Kern_Nbayes_assig_pred_proj=Kern_Nbayes_assig_pred_proj
-         results$Kern_Nbayes_assig_pred_Z=Kern_Nbayes_assig_pred_Z
-         results$likelihood = likelihoods1;
-         results$posteriors = posteriors;
-         results$posteriors0 = posteriors0;
-         results$posteriors1 = posteriors1;
-         results$posteriors.class = posteriors.class
-         results$posteriors.class0 = posteriors.class0
-         results$posteriors.class1 = posteriors.class1
-         results$LD=rpdTest
-         results$Z=Z2
-         return(results)
-          }
-   
-     
-          
-   ## other functions  0.023329207797073   
-          
-               
-  project_data = function(obj, X, nDims,obj.trainData, newdata, obj.order){
-         ## Project data on the discriminant axes
-         # Arguments:
-         # - X: same as in the constructor function
-         # - nDims: integre, the number of dimensions on which the data
-         # is going to be projected
-         
-         K = multinomial_kernel(obj.trainData, newdata, obj.order);
-        #K = K / obj.nObservations;
-         projData = K %*% obj$eigVec[, 1 : nDims];
-         Z=K%*%obj$Tr
-        }    
-        
-        
-KL_divergence=function(obj){
-         ## Symmetrised Kullback - Leibler divergence
-         # Returns a symmetrised version of the KL divergence between
-         # each pair of class
-         
-         for (i in 1 : obj.nClasses - 1){
-         class0 = obj.classes[i];
-         for (j in classId + 1 : obj.nClasses){
-         class1 = obj.classes[j];
-         mu0 = t(obj.means0[[i]]);
-                    mu1 = t(obj.means0[[j]]);
-         cov0 = obj.covariances[[i]];
-         cov1 = obj.covariances[[j]];
-         covInv0 = obj.covInv[[i]];
-         covInv1 = obj.covInv[[j]]
-         covDet0 = obj.covDet[[i]];
-         covDet1 = obj.covDet[[j]];
-         
-         KLnew = symmetrised_KL_multiNormal(mu0, cov0, covInv0, covDet0, mu1, cov1, covInv1, covDet1);
-         
-        # KLdiv.([class0 '_' class1]) = KLnew;
-         }
-         }
-      }
+#' @export
+predict.KLFDA_mk=function(object,prior=NULL, testData,...){
+  ## Predict the class of new data
+  # Arguments are the same as the X and Y in the constructor
+  # function
+  ## X is test data
+  # Checking arguments
+  
+  #if (nrow(X)!= length(Y)) stop("number of class and number of observations are not equal")
+  nObsTest=dim(testData)[1]
+  nFeaturesTest = dim(testData)[2]
+  obj.nClasses=object$obj.nClasses
+  obj.nFeatures=object$obj.nFeatures
+  if (obj.nFeatures != nFeaturesTest)
+    stop('The number of features must be constant across classes and train/test data')
+  
+  
+  #   classVecsTest = matrix(data=NA,nrow=nObsTest, ncol=obj.nClasses);
+  #  Yid = matrix(data=0,nrow=nObsTest, ncol=1);
+  # for (i in 1:obj.nClasses){
+  #clas = obj.classes[i];
+  #classVecsTest[,i] = match(Y, clas,nomatch=0)
+  #Yid[as.logical(classVecsTest[,i])] = i;
+  #}
+  obj.trainData=object$obj.trainData
+  obj.order=object$obj.order
+  ## Computing the test kernel matrix
+  K2 = multinomial_kernel(obj.trainData, testData, obj.order);
+  # K2 = K2/ obj.nObservations;
+  eigVec=object$eigVec
+  Tr=object$Tr
+  ## Projecting data onto the discriminant axes
+  # rpdTest = K2 %*% eigVec[, (1 : (obj.nClasses - 1))] # Reduced projected data test
+  rpdTest = K2 %*% eigVec
+  Z2 <- K2 %*% Tr
+  
+  
+  # requireNamespace("klaR") ## FOR Nativebaye function
+  
+  #bayes=NaiveBayes(Z, Y, prior, usekernel, fL,kernel,bw = "nrd0", adjust = 1,weights = NULL, window = kernel, give.Rkern = FALSE,...)
+  Kern_Nbayes_assig_pred_proj=predict.NaiveBayes(object$bayes_proj,as.data.frame(rpdTest),...)
+  Kern_Nbayes_assig_pred_Z=predict.NaiveBayes(object$bayes_Z,as.data.frame(Z2),...)
+  ## Retrieving the likelihood of each test point
+  likelihoods0 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
+  likelihoods = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
+  likelihoods1 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
+  posteriors0 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
+  posteriors = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses);
+  posteriors1 = matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
+  dist0=matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
+  dist=matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
+  dist1=matrix(data=0,nrow=nObsTest, ncol=obj.nClasses)
+  ## here from the  scripts  of Perr, each row of new data has nclass of 
+  # (rpdTest[j,] - obj.means[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means[[i]])
+  obj.means=object$obj.means
+  obj.means0=object$obj.means0
+  obj.means1=object$obj.means1
+  obj.covInv=object$obj.covInv
+  
+  obj.covInv1=object$obj.covInv1
+  factor=object$factor
+  factor1=object$factor1
+  obj.classes=object$obj.classes
+  if(is.null(prior)) 
+    obj.priors=object$obj.priors
+  else obj.priors=prior
+  
+  for (j in 1 : nObsTest){
+    
+    for (i in 1 : obj.nClasses){
+      # clas = obj.classes[i]
+      
+      dist[j,i]=mean((rpdTest[j,] - obj.means[i]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means[i]))
+      #mean((rpdTest[j,] - obj.means0[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means0[[i]]))
+      dist0[j,i]=mean((rpdTest[j,] - obj.means0[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means0[[i]]))
+      dist1[j,i]=mean((Z2[j,] - obj.means1[[i]]) %*% obj.covInv1[[i]] * t(Z2[j,] -obj.means1[[i]]))
+      # likelihoods[[j]][[i]] =factor[[i]] * exp(-0.5 * (rpdTest[j,] - obj.means[i]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means[i]))
+      #likelihoods1 =factor[[i]] * exp(-0.5 * (rpdTest[j,] - obj.means0[[i]]) %*% obj.covInv[[i]] * t(rpdTest[j,] -obj.means0[[i]]))
+      likelihoods[j,i] =factor[[i]] * exp(-0.5 * dist[j,i])
+      likelihoods0[j,i] =factor[[i]] * exp(-0.5 * dist0[j,i])
+      likelihoods1[j,i] =factor1[[i]] * exp(-0.5 * dist1[j,i])
+      
+      
+    }
+    posteriors[j,] = likelihoods[j,] * obj.priors / sum(likelihoods[j,] * obj.priors)## rpdtest means using 
+    posteriors0[j,] = likelihoods0[j,] * obj.priors / sum(likelihoods0[j,] * obj.priors)##rpdtest
+    posteriors1[j,] = likelihoods1[j,] * obj.priors / sum(likelihoods1[j,] * obj.priors)## Z
+  }
+  #}
+  
+  
+  ## Predicting the class of each data point
+  
+  posteriors.class=factor(obj.classes[max.col(posteriors)], levels = obj.classes)
+  posteriors.class0=factor(obj.classes[max.col(posteriors0)], levels = obj.classes)
+  posteriors.class1=factor(obj.classes[max.col(posteriors1)], levels = obj.classes)
+  
+  
+  ## Creating the output variables
+  
+  results = list();
+  results$Kern_Nbayes_assig_pred_proj=Kern_Nbayes_assig_pred_proj
+  results$Kern_Nbayes_assig_pred_Z=Kern_Nbayes_assig_pred_Z
+  results$likelihood = likelihoods1;
+  results$posteriors = posteriors;
+  results$posteriors0 = posteriors0;
+  results$posteriors1 = posteriors1;
+  results$posteriors.class = posteriors.class
+  results$posteriors.class0 = posteriors.class0
+  results$posteriors.class1 = posteriors.class1
+  results$LD=rpdTest
+  results$Z=Z2
+  return(results)
+}
+
+
       
 ############## KLFDA function that adopted from Tang et al 2016
 
@@ -519,7 +480,7 @@ kmatrixGauss=function (x, sigma = 1)
 KLFDA=function(kdata, y, r,  metric = c("weighted", "orthonormalized",
                                     "plain"),tol=1e-5, knn = 6, reg = 0.001)
 {
-  require(lfda)
+  requireNamespace("lfda")
   k=kdata
   
   obj.classes = sort(unique(y));
