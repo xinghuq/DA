@@ -13,23 +13,11 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-## S3 methods
-predict(object,prior,testData, ...)
-
-### KLFDA_mk
-predict.KLFDA_mk(object,prior, testData,...)
-
-## KLFDA
-predict.klfda_1(object, prior, testData, ...)
-
-##LDAKPC
-predict.LDAKPC(object, prior, testData,...)
-
-###LFDA
-predict.LFDA(object,prior, testData, ...)
-
-###LFDAKPC
-predict.LFDAKPC(object, prior, testData,...)
+\method{predict}{KLFDA_mk}(object,prior,testData, ...)
+\method{predict}{klfda_1}(object,prior,testData, ...)
+\method{predict}{LDAKPC}(object,prior,testData, ...)
+\method{predict}{LFDA}(object,prior,testData, ...)
+\method{predict}{LFDAKPC}(object,prior,testData, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

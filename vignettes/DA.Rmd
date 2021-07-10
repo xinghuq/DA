@@ -204,7 +204,6 @@ Sugiyama, M (2007).Dimensionality reduction of multimodal labeled data by local 
 
 Sugiyama, M (2006). Local Fisher discriminant analysis for supervised dimensionality reduction. In W. W. Cohen and A. Moore (Eds.), Proceedings of 23rd International Conference on Machine Learning (ICML2006), 905-912.
 
-Original Matlab Implementation: http://www.ms.k.u-tokyo.ac.jp/software.html#LFDA
 
 Tang, Y., & Li, W. (2019). lfda: Local Fisher Discriminant Analysis inR. Journal of Open Source Software, 4(39), 1572.
 

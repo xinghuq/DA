@@ -1,15 +1,15 @@
 Package: DA
-Version: 0.99.10
+Version: 1.2.0
 Date: 2021-07-09
-Title: Discriminant Analysis
-Description: This package incorporates the commonly used linear and non-linear, local and global supervised learning approaches (discriminant analysis). These discriminant analysis can be used to do ecological and evolutionary inference. We show the examples of demographic history inference, species identification, and population structure inference in the vignettes using the supervised discriminant analysis.
+Title: Discriminant Analysis for Evolutionary Inference 
+Description: Discriminant Analysis (DA) for evolutionary inference, especially for population genetic structure and community structure inference. This package incorporates the commonly used linear and non-linear, local and global supervised learning approaches (discriminant analysis). These discriminant analyses can be used to do ecological and evolutionary inference, including demography inference, species identification, and population/community structure inference.
 Authors@R: c(person("Xinghu", "Qin", role=c("aut", "cre", "cph"),
         email="qinxinghu@gmail.com", comment=c(ORCID="0000-0003-2351-3610")))
 biocViews:BiomedicalInformatics, ChIPSeq, Clustering, Coverage, DNAMethylation, DifferentialExpression, DifferentialMethylation,Software, DifferentialSplicing, Epigenetics, FunctionalGenomics, GeneExpression, GeneSetEnrichment, Genetics, ImmunoOncology, MultipleComparison, Normalization, Pathways, QualityControl, RNASeq, Regression, SAGE, Sequencing, Software, SystemsBiology, TimeCourse, Transcription, Transcriptomics
 Depends: R (>= 3.5)
 License: GPL-3
 SystemRequirements: GNU make
-URL: https://github.com/xinghuq/DA
+URL: https://xinghuq.github.io/DA/index.html
 BugReports: https://github.com/xinghuq/DA/issues
 Imports: adegenet,lfda,MASS,kernlab,klaR,plotly,rARPACK,grDevices,stats,utils
 VignetteBuilder: knitr
