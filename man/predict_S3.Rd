@@ -1,6 +1,6 @@
 \name{predict}
 \alias{predict}
-\alias{predict.klfda_1}
+\alias{predict.KLFDA}
 \alias{predict.KLFDA_mk}
 \alias{predict.LDAKPC}
 \alias{predict.LFDA}
@@ -14,7 +14,7 @@
 }
 \usage{
 \method{predict}{KLFDA_mk}(object,prior,testData, ...)
-\method{predict}{klfda_1}(object,prior,testData, ...)
+\method{predict}{KLFDA}(object,prior,testData, ...)
 \method{predict}{LDAKPC}(object,prior,testData, ...)
 \method{predict}{LFDA}(object,prior,testData, ...)
 \method{predict}{LFDAKPC}(object,prior,testData, ...)

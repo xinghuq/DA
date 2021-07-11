@@ -84,7 +84,7 @@ p4
 The default kernel is polydot(degree = 1, scale = 1, offset = 1). Users can set the kernel based on their own purpose.
  
 ```{r fig5, fig.height = 5, fig.width = 10, fig.align = "center"}
-iris_klfda=klfda_1(as.matrix(iris[,-5]),as.matrix(iris[,5]),r=3,tol=1E-10,prior = NULL)
+iris_klfda=KLFDA(as.matrix(iris[,-5]),as.matrix(iris[,5]),r=3,tol=1E-10,prior = NULL)
 
 
 p5 <- plot_ly(as.data.frame(iris_klfda$Z), x =iris_klfda$Z[,1], y =iris_klfda$Z[,2], color = iris[,5],colors=cols[iris[,5]],symbol = iris[,5],symbols = 1:3L) %>% 

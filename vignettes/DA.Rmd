@@ -4,6 +4,7 @@ subtitle: "Part 1. Population structure inference using discriminant analysis"
 author: "Xinghu Qin  --School of Biology, University of St Andrews"
 #date: "`r Sys.Date()`"
 date: "30-03-2020"
+URL: https://xinghuq.github.io/DA/index.html
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Instruction for Package DA }
@@ -156,15 +157,13 @@ Fig.5 LFDAKPC plot of 15 cattle breeds.
 The LFDAKPC also produces the similar results as LDAKPC and DAPC.
 
 
-
-
 ##  Kernel Local Fisher Discriminant Analysis (KLFDA)
 
 Kernel local (Fisher) discriminant analysis (KLFDA) is a kernelized version of local Fisher discriminant analysis (LFDA). KLFAD can capature the non-linear relationships between samples. It was reported that the discrimintory power of KLFDA was significantly improved compared to LDA.
 
 
 ```{r fig6, fig.height = 5, fig.width = 8.5, fig.align = "center"} 
-cattle_klfda=klfda_1(as.matrix(cattle_geno[,-1]),as.factor(cattle_pop$x),r=3,tol=1E-10,prior = NULL)
+cattle_klfda=KLFDA(as.matrix(cattle_geno[,-1]),as.factor(cattle_pop$x),r=3,tol=1E-10,prior = NULL)
 
 cols=rainbow(length(unique(cattle_pop$x)))
 p5 <- plot_ly(as.data.frame(cattle_klfda$Z), x =cattle_klfda$Z[,1], y =cattle_klfda$Z[,2], color = cattle_pop$x,colors=cols[cattle_pop$x],symbol = cattle_pop$x,symbols = 1:15L) %>% 
@@ -174,6 +173,7 @@ p5 <- plot_ly(as.data.frame(cattle_klfda$Z), x =cattle_klfda$Z[,1], y =cattle_kl
 p5
 ```
 Fig.6 KLFDA plot of 15 cattle breeds.
+
 KLFDA seems present the aggregates that are more convergent than the above methods.
 
 All the above methods show the same global structure for 15 cattle breeds. 
@@ -195,8 +195,10 @@ compoplot(as.matrix(cattle_klfda$bayes_assigment$posterior),show.lab = TRUE, pos
 
 Fig. 7 The population structure of Cattle breeds (individual assignment)
 
+More tutorials can be found at URL: https://xinghuq.github.io/DA/articles/index.html.
 
 # References
+
 Laloë, D., Jombart, T., Dufour, A.-B. & Moazami-Goudarzi, K. (2007). Consensus genetic structuring and typological value of markers using multiple co-inertia analysis. Genetics Selection Evolution, 39, 545.
 
 Jombart, T. (2008). adegenet: a R package for the multivariate analysis of genetic markers. Bioinformatics, 24, 1403-1405.
@@ -209,7 +211,7 @@ Tang, Y., & Li, W. (2019). lfda: Local Fisher Discriminant Analysis inR. Journal
 
 Moore, A. W. (2004). Naive Bayes Classifiers. In School of Computer Science. Carnegie Mellon University.
 
-Pierre Enel (2020). Kernel Fisher Discriminant Analysis (https://www.github.com/p-enel/MatlabKFDA), GitHub. Retrieved March 30, 2020.
+Pierre Enel (2020). Kernel Fisher Discriminant Analysis (https://github.com/p-enel/MatlabKFDA), GitHub. Retrieved March 30, 2020.
 
 Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab-an S4 package for kernel methods in R. Journal of statistical software, 11(9), 1-20.
 
@@ -218,4 +220,7 @@ Bingpei Wu, 2012, WMDB 1.0: Discriminant Analysis Methods by Weight Mahalanobis 
 Ito, Y., Srinivasan, C., & Izumi, H. (2006, September). Discriminant analysis by a neural network with Mahalanobis distance. In International Conference on Artificial Neural Networks (pp. 350-360). Springer, Berlin, Heidelberg.
 
 Wölfel, M., & Ekenel, H. K. (2005, September). Feature weighted Mahalanobis distance: improved robustness for Gaussian classifiers. In 2005 13th European signal processing conference (pp. 1-4). IEEE.
+
+Qin, X., Wu, M., Lock, R., Kallenbach, R. (2020). DA: Ecological and Evolutionary Inference Using Supervised Discriminant Analysis. Authorea.DOI: 10.22541/au.159256808.83862168
+
 
